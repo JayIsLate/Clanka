@@ -179,6 +179,16 @@
         .copy-notification.show {
             opacity: 1;
         }
+        
+        .twitter-link {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .twitter-link:hover {
+            color: #1da1f2;
+            text-shadow: 0 0 8px #1da1f2;
+        }
     </style>
 </head>
 <body>
@@ -213,6 +223,17 @@
                 <div class="progress-fill" style="width: 95%" id="friendshipBar"></div>
             </div>
             <div><span class="cute-text">STATUS: Cuteness levels at maximum! 🤖💚</span></div>
+        </div>
+
+        <div class="command-line">
+            <span class="prompt">clanka@home:~$</span> <span class="command twitter-link" onclick="followTwitter()">initialize_friend_follow</span>
+        </div>
+        
+        <div class="output">
+            <div>🐦 Connecting to CLANKA social network...</div>
+            <div>📡 Establishing friendship link with @clanka_4ever</div>
+            <div><span class="love-text">✨ Click above to follow our robot family on Twitter! ✨</span></div>
+            <div class="cute-text">💚 Join thousands of robot friends sharing daily cuteness!</div>
         </div>
         
         <div class="section">
@@ -409,6 +430,11 @@
                     notification.classList.remove('show');
                 }, 2000);
             });
+        }
+        
+        // Twitter follow function
+        function followTwitter() {
+            window.open('https://x.com/clanka_4ever', '_blank');
         }
         
         // Resize canvas on window resize
