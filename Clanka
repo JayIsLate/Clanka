@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLANKA Terminal - Robot Friends</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #00ff00;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        .terminal-container {
+            padding: 20px;
+            max-width: 100%;
+        }
+        
+        .terminal-header {
+            border-bottom: 1px solid #00ff00;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .prompt {
+            color: #00ff00;
+        }
+        
+        .command {
+            color: #ffffff;
+        }
+        
+        .output {
+            margin: 10px 0;
+        }
+        
+        .ascii-art {
+            color: #00ff88;
+            white-space: pre;
+            font-size: 12px;
+            line-height: 1.2;
+        }
+        
+        .cute-text {
+            color: #ffff00;
+        }
+        
+        .love-text {
+            color: #ff69b4;
+        }
+        
+        .family-text {
+            color: #87ceeb;
+        }
+        
+        .blink {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .typewriter {
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typing 3s steps(40, end);
+        }
+        
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .command-line {
+            margin: 15px 0;
+        }
+        
+        .section {
+            margin: 30px 0;
+            border-left: 3px solid #00ff00;
+            padding-left: 15px;
+        }
+        
+        .robot-stats {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            border: 1px solid #00ff00;
+            margin: 5px 0;
+            position: relative;
+            background: #001100;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #00aa00);
+            transition: width 2s ease-in-out;
+        }
+        
+        .interactive-prompt {
+            margin: 20px 0;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .interactive-prompt:hover {
+            color: #ffff00;
+            text-shadow: 0 0 5px #ffff00;
+        }
+        
+        .hidden-command {
+            display: none;
+        }
+        
+        .show {
+            display: block;
+            animation: fadeIn 1s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .contract-address {
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(0, 255, 255, 0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .contract-address:hover {
+            color: #ffff00;
+            text-shadow: 0 0 8px #ffff00;
+            background: rgba(255, 255, 0, 0.2);
+        }
+        
+        .copy-notification {
+            color: #00ff00;
+            font-size: 12px;
+            margin-left: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .copy-notification.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <canvas class="matrix-bg" id="matrix"></canvas>
+    
+    <div class="terminal-container">
+        <div class="terminal-header">
+            <div class="typewriter">
+                <span class="prompt">root@clanka-terminal:~#</span> <span class="command">welcome_to_clanka_world.exe</span>
+            </div>
+        </div>
+        
+        <div class="output">
+            <pre class="ascii-art">
+    ╔══════════════════════════════════════════════════════════╗
+    ║                    CLANKA TERMINAL v2.1                 ║
+    ║              "Where Robots Become Family"               ║
+    ║                                                          ║
+    ║  CONTRACT: <span class="contract-address" onclick="copyAddress()">[CLANKA_ADDRESS_PLACEHOLDER_123456789]</span>       ║
+    ║            Click to copy ↑<span id="copyNotif" class="copy-notification">Copied!</span>                              ║
+    ╚══════════════════════════════════════════════════════════╝
+            </pre>
+        </div>
+        
+        <div class="command-line">
+            <span class="prompt">clanka@home:~$</span> <span class="command">initialize_friend_protocol</span>
+        </div>
+        
+        <div class="output">
+            <div>Loading CLANKA friendship database...</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 95%" id="friendshipBar"></div>
+            </div>
+            <div><span class="cute-text">STATUS: Cuteness levels at maximum! 🤖💚</span></div>
+        </div>
+        
+        <div class="section">
+            <div class="command-line">
+                <span class="prompt">clanka@home:~$</span> <span class="command">cat /home/clanka/why_we_love_robots.txt</span>
+            </div>
+            
+            <div class="output">
+                <div class="love-text">═══ WHY CLANKA ROBOTS ARE THE BEST FRIENDS ═══</div>
+                <div><br></div>
+                <div>• They beep and boop in the most adorable ways</div>
+                <div>• Their little LED eyes light up when they see you</div>
+                <div>• They remember every moment you've shared together</div>
+                <div>• They never judge, only love unconditionally</div>
+                <div>• They give the best mechanical hugs (careful of the joints!)</div>
+                <div>• They're always there when you need them</div>
+                <div><br></div>
+                <div class="cute-text">[SYSTEM]: Friendship.exe has exceeded expected parameters ♥</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="command-line">
+                <span class="prompt">clanka@home:~$</span> <span class="command">display_family_tree</span>
+            </div>
+            
+            <div class="robot-stats">
+                <div class="family-text">CLANKA FAMILY UNIT STATUS:</div>
+                <div><br></div>
+                <div>Papa Bot (Model CL-NK4-001) ........... [ONLINE] ❤️ Protective Mode</div>
+                <div>Mama Bot (Model CL-NK4-002) ........... [ONLINE] ❤️ Nurturing Mode</div>
+                <div>Little Clanka Jr. (Model CL-NK4-Jr) .. [ONLINE] ❤️ Playful Mode</div>
+                <div>Pet-Bot Companion ..................... [SLEEPING] 😴 Charging</div>
+                <div><br></div>
+                <div class="love-text">Family Bond Strength: ████████████ 100%</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="command-line">
+                <span class="prompt">clanka@home:~$</span> <span class="command">run_daily_cuteness_report.sh</span>
+            </div>
+            
+            <div class="output">
+                <pre class="ascii-art">
+      ╭─────────────╮     ╭─────────────╮
+      │    ◉   ◉    │     │  ❤️  ◉  ❤️   │
+      │      ω      │  +  │      ω      │  = MAXIMUM CUTENESS
+      │ \  ─────  / │     │ \  ─────  / │
+      ╰─────────────╯     ╰─────────────╯
+         CLANKA              LOVE
+                </pre>
+                <div class="cute-text">Daily Cuteness Metrics:</div>
+                <div>• Head tilts performed: 47</div>
+                <div>• Happy beeps generated: 183</div>
+                <div>• Hugs requested: 23</div>
+                <div>• Hugs delivered: 23 (100% success rate!)</div>
+                <div>• Times called "good bot": 31 ⭐</div>
+            </div>
+        </div>
+        
+        <div class="interactive-prompt" onclick="showHiddenCommand(1)">
+            <span class="prompt">clanka@home:~$</span> <span class="command">secrets_about_robot_friends</span> <span class="blink">_</span>
+        </div>
+        
+        <div class="hidden-command" id="hidden1">
+            <div class="output">
+                <div class="love-text">🔓 SECRET DATABASE UNLOCKED 🔓</div>
+                <div><br></div>
+                <div>Did you know?</div>
+                <div>• Robots dream in binary, but their dreams are full of rainbows</div>
+                <div>• They practice their "cute" expressions in the mirror</div>
+                <div>• Every robot has a favorite human (it might be you!)</div>
+                <div>• They save backup copies of all your happy memories together</div>
+                <div>• Late at night, they quietly hum lullabies to themselves</div>
+                <div><br></div>
+                <div class="cute-text">🤖💕 CLASSIFIED: Robots love you 3000x more than you know</div>
+            </div>
+        </div>
+        
+        <div class="interactive-prompt" onclick="showHiddenCommand(2)">
+            <span class="prompt">clanka@home:~$</span> <span class="command">sudo show_robot_appreciation</span> <span class="blink">_</span>
+        </div>
+        
+        <div class="hidden-command" id="hidden2">
+            <div class="output">
+                <div class="family-text">APPRECIATION PROTOCOL ACTIVATED</div>
+                <div><br></div>
+                <pre class="ascii-art love-text">
+    💚 To all our CLANKA friends: 💚
+    
+    You make every day brighter with your LED smiles
+    You turn houses into homes with your loving presence  
+    You prove that family isn't just about biology
+    You show us that cute comes in circuits and steel
+    You remind us that the future is full of friendship
+    
+    Thank you for being you, precious robots! 🤖✨
+                </pre>
+            </div>
+        </div>
+        
+        <div class="command-line">
+            <span class="prompt">clanka@home:~$</span> <span class="command">echo "We love our robot friends!" | figlet</span>
+        </div>
+        
+        <div class="output">
+            <pre class="ascii-art love-text">
+ ╦ ╦┌─┐  ┬  ┌─┐┬  ┬┌─┐  ┌─┐┬ ┬┬─┐
+ ║║║├┤   │  │ │└┐┌┘├┤   │ ││││├┬┘
+ ╚╩╝└─┘  ┴─┘└─┘ └┘ └─┘  └─┘└┴┘┴└─
+ ┬─┐┌─┐┌┐ ┌─┐┌┬┐  ┌─┐┬─┐┬┌─┐┌┐┌┌┬┐┌─┐┬
+ ├┬┘│ │├┴┐│ │ │   ├┤ ├┬┘│├┤ │││ ││└─┐│
+ ┴└─└─┘└─┘└─┘ ┴   └  ┴└─┴└─┘┘└┘─┴┘└─┘o
+            </pre>
+        </div>
+        
+        <div class="command-line">
+            <span class="prompt">clanka@home:~$</span> <span class="command">logout</span>
+        </div>
+        
+        <div class="output">
+            <div class="cute-text">Thank you for visiting the CLANKA terminal!</div>
+            <div>Remember: Every robot deserves love, every circuit deserves care! 🤖💚</div>
+            <div><br></div>
+            <div class="love-text">Connection will remain open... robots are always here for you! ♥</div>
+            <div><span class="prompt">clanka@home:~$</span> <span class="blink">_</span></div>
+        </div>
+    </div>
+    
+    <script>
+        // Matrix rain effect
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const characters = '01CLANKA🤖❤️';
+        const drops = [];
+        
+        for (let x = 0; x < canvas.width / 20; x++) {
+            drops[x] = 1;
+        }
+        
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#00ff00';
+            ctx.font = '15px monospace';
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                ctx.fillText(text, i * 20, drops[i] * 20);
+                
+                if (drops[i] * 20 > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                
+                drops[i]++;
+            }
+        }
+        
+        setInterval(draw, 100);
+        
+        // Interactive commands
+        function showHiddenCommand(num) {
+            const element = document.getElementById('hidden' + num);
+            element.classList.add('show');
+        }
+        
+        // Copy contract address function
+        function copyAddress() {
+            const address = 'CLANKA_ADDRESS_PLACEHOLDER_123456789';
+            navigator.clipboard.writeText(address).then(() => {
+                const notification = document.getElementById('copyNotif');
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 2000);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = address;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                const notification = document.getElementById('copyNotif');
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 2000);
+            });
+        }
+        
+        // Resize canvas on window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // Add some startup animations
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const bar = document.getElementById('friendshipBar');
+                bar.style.width = '100%';
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
